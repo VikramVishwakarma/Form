@@ -165,7 +165,7 @@ function upload_file_data()
 
     foreach ($uploaded_files['name'] as $key => $value) {
         $file_name   = $uploaded_files['name'][$key];
-        $file_tmp    = $uploaded_files['tmp_name'][$key];
+        // $file_tmp    = $uploaded_files['tmp_name'][$key];
         $target_file = $user_dirname . basename($file_name);
 
         array_push($arr, $target_file);
