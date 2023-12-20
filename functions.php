@@ -24,7 +24,7 @@ function enqueue_custom_scripts() {
     wp_enqueue_style( 'style-all_styles-css', get_template_directory_uri() .'/css/all_styles.css', array(), '1.0.1' );
     //js
     wp_enqueue_script('jquery');
-    wp_enqueue_script('custom-script', get_template_directory_uri() .'/assets/js/st.js');
+    wp_enqueue_script('custom-script', get_template_directory_uri() . '/assets/js/st.js');
     wp_localize_script('custom-script', 'ajaxpagination', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
         'noposts' => __('No more posts found', 'text-domain'),
