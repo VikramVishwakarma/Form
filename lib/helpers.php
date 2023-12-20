@@ -18,7 +18,6 @@ function load()
         'user_alert' => $userAlert
     );
 
-
     // Function to get value
     function get_my_value()
     {
