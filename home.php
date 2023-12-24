@@ -70,14 +70,22 @@ $set_Alert      = $alert['user_alert'];
 
         </div>
       </div>
-      <form class="card-form__inner" id="submit_form">
+      <form class="card-form__inner" id="submit_form" >
         <div class="card-input">
           <label for="cardNumber" class="card-input__label">Card Number</label>
-          <input type="text" id="cardNumber" name="cardNumber" maxlength="19" class="card-input__input" value="<?= ($userCardNumber) ?  $userCardNumber : '' ?>">
+          <input type="text" id="cardNumber" name="cardNumber" 
+          placeholder="Enter your credit number " maxlength="16"
+           class="card-input__input" value="<?= ($userCardNumber) ?  $userCardNumber : '' ?>">
+          <span id="validationMessage" style="color: red;"></span>
         </div>
+
+
         <div class="card-input">
           <label for="cardName" class="card-input__label">Card Holders</label>
-          <input type="text" name="cardName" class="card-input__input" value="<?= ($userCardName) ?  $userCardName : '' ?>">
+          <input type="text" name="cardName" class="card-input__input" placeholder="Enter your holder name"
+          value="<?= ($userCardName) ?  $userCardName : '' ?>">
+          <span id="nameValidationMessage" style="color: red;"></span>
+
         </div>
         <div class="card-form__row">
           <div class="card-form__col">
@@ -149,45 +157,39 @@ $set_Alert      = $alert['user_alert'];
 
 <!-- Ajax  -->
 
+
+
+<script>
+  const cardNumberInput = document.getElementById('cardNumber');
+  const cardNameInput = document.querySelector('input[name="cardName"]');
+
+  function validateInput(input, regex, validationMessage) {
+    input.addEventListener('input', function (e) {
+      const value = e.target.value.replace(regex, '');
+      e.target.value = value;
+
+      const messageElement = document.getElementById(validationMessage);
+      if (value.length === 0) {
+        messageElement.innerText = '';
+      } else {
+        messageElement.innerText = `Please enter valid ${input.name === 'cardNumber' ? '16-digit card number' : 'holder name'}`;
+      }
+    });
+  }
+
+  validateInput(cardNumberInput, /\D/g, 'validationMessage');
+  validateInput(cardNameInput, /[^a-zA-Z\s]/g, 'nameValidationMessage');
+</script>
+
+
+
 <script>
   $(document).ready(function() {
-    $("#submit_form").on('submit', function(e) {
-      e.preventDefault();
-      var formData = $(this).serialize();
-      var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+    // $("#submit_form").on('submit', function(e) {
+    //   e.preventDefault();
+    
 
-
-      $.ajax({
-        method: 'post',
-        url: ajaxurl,
-        data: {
-          action: 'load',
-          formData: formData
-        },
-        success: function(response) {
-          console.log('success', response);
-         
-          var cxc_form = new FormData($('#submit_form')[0]);
-          cxc_form.append('action', 'filename_get');
-
-          jQuery.ajax({
-            type: 'POST',
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-            data: cxc_form,
-            contentType: false,
-            processData: false,
-            success: function(cxc_response) {
-              alert('successfully uploaded');
-            }
-          });
-
-        },
-        error: function(error) {
-          console.log('error', error);
-        }
-      });
-
-    });
+    // });
 
 
     $("#image").on('change', function(e) {
@@ -207,4 +209,58 @@ $set_Alert      = $alert['user_alert'];
     });
   });
 </script>
+
+
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+
+      var inputs = document.querySelectorAll('form input'); // Select all inputs in the form
+
+      // Check if any input is empty
+      var isEmpty = Array.from(inputs).some(function(input) {
+        return input.value.trim() === ''; // Check if input value is empty after trimming whitespace
+      });
+
+      if (isEmpty) {
+        event.preventDefault(); // Prevent form submission
+        alert('Please fill in all fields.'); // Display an alert or handle empty inputs in another way
+      } 
+      else{
+        var formData = $(this).serialize();
+        var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+        event.preventDefault();
+
+        $.ajax({
+          method: 'post',
+          url: ajaxurl,
+          data: {
+            action: 'load',
+            formData: formData
+          },
+          success: function(response) {
+            console.log('success', response);
+          
+            var cxc_form = new FormData($('#submit_form')[0]);
+            cxc_form.append('action', 'filename_get');
+
+            jQuery.ajax({
+              type: 'POST',
+              url: '<?php echo admin_url('admin-ajax.php'); ?>',
+              data: cxc_form,
+              contentType: false,
+              processData: false,
+              success: function(cxc_response) {
+                alert('successfully uploaded');
+              }
+            });
+
+          },
+          error: function(error) {
+            console.log('error', error);
+          }
+        });
+      }
+    });
+  </script>
 <?php get_footer();?>
